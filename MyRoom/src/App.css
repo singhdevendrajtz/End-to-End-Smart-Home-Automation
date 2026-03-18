@@ -1,0 +1,233 @@
+/* --- RESET & ROOT VARIABLES --- */
+:root {
+  --bg-color: #0f172a;
+  --bg-gradient: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 80%);
+  --tile-bg: rgba(255, 255, 255, 0.05);
+  --accent-blue: #38bdf8;
+  --status-green: #4ade80;
+  --status-red: #f87171;
+  --text-main: #ffffff;
+  --text-dark: #0f172a;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  /* Strictly removes all default borders */
+  border: none !important; 
+  outline: none !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+/* --- MAIN LAYOUT CONTAINER --- */
+.app-shell {
+  width: 100%;
+  max-width: 650px; /* Constrains the width to keep the "Hub" feel */
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- HEADER SECTION --- */
+.hub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.brand-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hub-logo {
+  font-size: 1.2rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.room-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  opacity: 0.5;
+  text-transform: uppercase;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot.connected {
+  background-color: var(--status-green);
+  box-shadow: 0 0 10px var(--status-green);
+}
+
+.status-dot.offline {
+  background-color: var(--status-red);
+}
+
+/* --- MASTER TOGGLE BUTTON --- */
+.master-btn {
+  background: rgba(255, 255, 255, 0.06);
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.mode-off { color: var(--status-red); }
+.mode-on { color: var(--accent-blue); }
+
+.master-btn:active {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.master-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* --- THE TILE GRID --- */
+.hub-grid {
+  display: grid;
+  /* Desktop/Tablet logic: Fits up to 3 tiles per row comfortably */
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.hub-tile {
+  background: var(--tile-bg);
+  border-radius: 28px;
+  padding: 24px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, box-shadow 0.3s ease;
+  text-align: left;
+}
+
+.hub-tile:active {
+  transform: scale(0.96);
+}
+
+.hub-tile.active {
+  background-color: #ffffff;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* ICON STYLING */
+.tile-icon {
+  width: 34px;
+  height: 34px;
+}
+
+.tile-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* TEXT STYLING */
+.tile-info .name {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.tile-info .state {
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.4;
+  color: var(--text-main);
+}
+
+/* ACTIVE TILE INVERSION */
+.hub-tile.active .name,
+.hub-tile.active .state {
+  color: var(--text-dark);
+}
+
+.hub-tile.locked {
+  opacity: 0.2;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* --- ANIMATIONS --- */
+.spin {
+  animation: spin-anim 2.5s linear infinite;
+}
+
+@keyframes spin-anim {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* --- MOBILE OPTIMIZATION --- */
+@media (max-width: 480px) {
+  .app-shell {
+    padding: 25px 16px;
+  }
+
+  .hub-header {
+    margin-bottom: 25px;
+  }
+
+  .hub-grid {
+    /* Locks mobile to 2 columns to prevent "zoomed-in" large tiles */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .hub-tile {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .tile-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .tile-info .name {
+    font-size: 0.85rem;
+  }
+
+  .hub-logo {
+    font-size: 1rem;
+  }
+}
